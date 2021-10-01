@@ -1,0 +1,3 @@
+rootProject.name = "InputView"
+include ':app'
+include ':inputview'
