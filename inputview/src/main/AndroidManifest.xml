@@ -2,4 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.mtjsoft.inputview">
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+
 </manifest>

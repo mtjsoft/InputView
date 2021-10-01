@@ -22,4 +22,13 @@
         <item>symbol</item>
         <item>flag</item>
     </string-array>
+
+    <integer-array name="record_volume_array">
+        <item>@mipmap/icon_volume_0</item>
+        <item>@mipmap/icon_volume_1</item>
+        <item>@mipmap/icon_volume_3</item>
+        <item>@mipmap/icon_volume_5</item>
+        <item>@mipmap/icon_volume_7</item>
+        <item>@mipmap/icon_volume_9</item>
+    </integer-array>
 </resources>

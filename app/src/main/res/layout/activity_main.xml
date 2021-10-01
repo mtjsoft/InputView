@@ -10,6 +10,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/color_CCCCCC"
         app:layout_constraintBottom_toTopOf="@+id/bottom_input"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
