@@ -50,14 +50,12 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
     var isCancel = false
 
     private lateinit var savePcmPath: String
-    private lateinit var saveWavPath: String
 
     private var currentDur: Long = 0
-    private var fileName: String = "temp_record_wav.wav"
+    private var saveFileName: String = "temp_record_wav.wav"
 
     fun setOnLongPressListener(l: onLongPressListener) {
-        savePcmPath = context.filesDir.absolutePath + File.separator + "temp_record_pcm.pcm"
-        saveWavPath = context.filesDir.absolutePath + File.separator + fileName
+        savePcmPath = context.filesDir.absolutePath + File.separator + saveFileName
 
         mPressListener = l
     }
@@ -92,7 +90,7 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
             mRecordManager.stopRecording()
             if (!isCancel) {
                 if (currentDur > 0) {
-                    mPressListener?.onRecordOver(currentDur, fileName, saveWavPath)
+                    mPressListener?.onRecordOver(currentDur, saveFileName, savePcmPath)
                 } else {
                     Toast.makeText(
                         context,
@@ -102,7 +100,6 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
                 }
             } else {
                 File(savePcmPath).delete()
-                File(saveWavPath).delete()
             }
         } else if (event.action == MotionEvent.ACTION_MOVE) {
             if (viewStop) {
@@ -145,8 +142,9 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
             reset()
         } else {
             reset()
+            setDuration(0, 0)
             mRecordManager.startRecord(
-                savePcmPath, saveWavPath,
+                savePcmPath,
                 RECORD_TIME_MAX,
                 object : RecordManager.OnRecordListener {
 
@@ -171,10 +169,9 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
                                 setStop()
                                 mRecordManager.stopRecording()
                                 if (!isCancel) {
-                                    mPressListener?.onRecordOver(currentDur, fileName, saveWavPath)
+                                    mPressListener?.onRecordOver(currentDur, saveFileName, filePath)
                                 } else {
                                     File(savePcmPath).delete()
-                                    File(saveWavPath).delete()
                                 }
                             }
                         }
@@ -331,7 +328,7 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
     private fun formatTime(time: Long): String {
         return if (time < 10) {
             "0$time"
-        } else time.toString() + ""
+        } else time.toString()
     }
 
     private fun getRemainTime(timeInMilli: Long): Long {

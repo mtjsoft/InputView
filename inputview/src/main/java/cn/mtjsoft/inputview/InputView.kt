@@ -80,8 +80,8 @@ class InputView : LinearLayout {
     ) {
         orientation = VERTICAL
         initView()
-        initEmojiData(false)
         initEmojiTypeData()
+        initEmojiData(false)
         initFunctionData()
         // 监听生命周期，隐藏面板
         if (context is androidx.appcompat.app.AppCompatActivity) {
@@ -135,13 +135,8 @@ class InputView : LinearLayout {
         val addImageView = findViewById<ImageView>(R.id.iv_add_image)
         mEtInput.addTextChangedListener {
             it?.let {
-                if (TextUtils.isEmpty(it.toString())) {
-                    sendBtn.visibility = GONE
-                    addImageView.visibility = VISIBLE
-                } else {
-                    sendBtn.visibility = VISIBLE
-                    addImageView.visibility = GONE
-                }
+                sendBtn.visibility = if (TextUtils.isEmpty(it.toString())) GONE else VISIBLE
+                addImageView.visibility = if (TextUtils.isEmpty(it.toString())) VISIBLE else GONE
             }
         }
         // 发送点击
@@ -152,20 +147,14 @@ class InputView : LinearLayout {
         }
         // 语音点击
         voiceImageView.setOnClickListener {
-            if (mRecordView.visibility == VISIBLE) {
-                // 还原输入框
-                voiceImageView.setImageResource(R.mipmap.ic_read_voice)
-                mRecordView.visibility = GONE
-                mEtInput.visibility = VISIBLE
-                hideEmojiView(true)
-            } else {
-                // 显示长按语音
-                voiceImageView.setImageResource(R.mipmap.icon_keyboard)
-                mRecordView.visibility = VISIBLE
-                mEtInput.visibility = GONE
-                hideEmojiView(false)
+            voiceImageView.setImageResource(if (mRecordView.visibility == VISIBLE) R.mipmap.ic_read_voice else R.mipmap.icon_keyboard)
+            mEtInput.visibility = if (mRecordView.visibility == VISIBLE) VISIBLE else GONE
+            hideEmojiView(mRecordView.visibility == VISIBLE)
+            if (mRecordView.visibility == GONE) {
                 hideKeyboard(it.windowToken)
+                mEtInput.setText("")
             }
+            mRecordView.visibility = if (mRecordView.visibility == VISIBLE) GONE else VISIBLE
         }
         // 表情显示/隐藏
         openEmojiView = findViewById(R.id.iv_emoji)
@@ -178,7 +167,7 @@ class InputView : LinearLayout {
             if (emojiTypeView.visibility == GONE) {
                 // 展开
                 openEmojiView.setImageResource(R.mipmap.icon_keyboard)
-                hideKeyboard(mEtInput.windowToken)
+                hideKeyboard(it.windowToken)
                 MAIN_HANDLER.postDelayed({
                     initEmojiData(true)
                 }, 100)
@@ -230,7 +219,7 @@ class InputView : LinearLayout {
             // 数据已初始化过了
             setDefaultFaceEmoji(showEmojiView)
         } else {
-            Thread {
+            Constant.DEFAULT_EXECUTOR.execute {
                 typeEns.mapIndexed { _, dir ->
                     val tempFiles: Array<String>? = context.assets.list("$EMOJI_ASSERT_SRC/$dir")
                     val tempEmojis = LinkedList<EmojiEntry>()
@@ -248,7 +237,7 @@ class InputView : LinearLayout {
                 MAIN_HANDLER.post {
                     setDefaultFaceEmoji(showEmojiView)
                 }
-            }.start()
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import cn.mtjsoft.inputview.InputView
 import cn.mtjsoft.inputview.iml.AdapterItemClickListener
 import cn.mtjsoft.inputview.iml.SendClickListener
 import cn.mtjsoft.inputview.iml.VoiceOverListener
+import cn.mtjsoft.inputview.manager.PCMAudioPlayer
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +29,13 @@ class MainActivity : AppCompatActivity() {
             override fun onOver(fileName: String, filePath: String, duration: Int) {
                 Toast.makeText(baseContext, "录音时长：$duration 秒，$filePath", Toast.LENGTH_SHORT).show()
                 Log.e("mtj","地址：$filePath \n时长：$duration 秒")
+                PCMAudioPlayer.instance.startPlay(filePath)
             }
         })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        PCMAudioPlayer.instance.release()
     }
 }
