@@ -52,7 +52,7 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
     private lateinit var savePcmPath: String
 
     private var currentDur: Long = 0
-    private var saveFileName: String = "temp_record_wav.wav"
+    private var saveFileName: String = "temp_record_pcm.pcm"
 
     fun setOnLongPressListener(l: onLongPressListener) {
         savePcmPath = context.filesDir.absolutePath + File.separator + saveFileName
@@ -76,8 +76,6 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
             viewStop = false
             currentDur = 0
             startLongPress()
-            setText(R.string.stop_press_record)
-            isPressed = true
             return true
         } else if (event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_UP) {
             mDialogRemain?.dismiss()
@@ -122,12 +120,12 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
      */
     private fun startLongPress() {
         // 检查是否有录音权限
-        ContextCompat.checkSelfPermission(context, RECORD_AUDIO)
         if (ContextCompat.checkSelfPermission(
                 context,
                 RECORD_AUDIO
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            setStop()
             // 没有权限
             Toast.makeText(
                 context,
@@ -142,6 +140,8 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
             reset()
         } else {
             reset()
+            setText(R.string.stop_press_record)
+            isPressed = true
             setDuration(0, 0)
             mRecordManager.startRecord(
                 savePcmPath,

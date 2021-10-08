@@ -426,9 +426,10 @@ class InputView : LinearLayout {
     /**
      * 设置功能面板数据
      */
-    fun setFuncationData(data: List<FunctionEntity>) {
+    fun setFuncationData(data: List<FunctionEntity>): InputView {
         functionData.clear()
         functionData.addAll(data)
         funcationAdapter.notifyDataChanged()
+        return this
     }
 }
