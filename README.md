@@ -1,6 +1,21 @@
 custom chat input component —— InputView
 ===
 
+```
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+```
+dependencies {
+	        implementation 'com.github.mtjsoft:InputView:1.0.0'
+	}
+```
+
 ### 1、xml add InputView
 
 ```kotlin
