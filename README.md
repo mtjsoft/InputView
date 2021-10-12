@@ -1,7 +1,7 @@
 custom chat input component —— InputView
 ===
 
-```
+```kotlin
 allprojects {
 		repositories {
 			...
@@ -10,7 +10,7 @@ allprojects {
 	}
 ```
 
-```
+```kotlin
 dependencies {
 	        implementation 'com.github.mtjsoft:InputView:1.0.0'
 	}
@@ -92,5 +92,8 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 ### 3、示例展示
-<video src="./demo.mp4"/>
+<img src="./images/1.jpg"/>
+<img src="./images/2.jpg"/>
+<img src="./images/3.jpg"/>
+<img src="./images/4.jpg"/>
 
