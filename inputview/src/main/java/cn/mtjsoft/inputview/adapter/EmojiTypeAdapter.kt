@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import cn.mtjsoft.inputview.R
+import cn.mtjsoft.inputview.builder.CustomAttributeBuilder
 import cn.mtjsoft.inputview.iml.AdapterItemClickListener
 
 class EmojiTypeAdapter(
     private val context: Context,
     private val data: List<String>,
+    private val customAttributeBuilder: CustomAttributeBuilder,
     private val clickListener: AdapterItemClickListener
 ) :
     RecyclerView.Adapter<EmojiTypeAdapter.EmojiTypeViewHolder>() {
@@ -39,10 +41,10 @@ class EmojiTypeAdapter(
 
     override fun onBindViewHolder(
         holder: EmojiTypeAdapter.EmojiTypeViewHolder,
-        @SuppressLint("RecyclerView") position: Int
+        position: Int
     ) {
         holder.textView.text = data[position]
-        holder.textView.setBackgroundResource(if (clickPosition == position) R.color.container_divider1 else R.color.transparent)
+        holder.textView.setBackgroundResource(if (clickPosition == position) customAttributeBuilder.emojiTypeSelectBgColor() else R.color.transparent)
         holder.textView.setOnClickListener {
             setClickPosition(position)
             clickListener.onItemClick(it, position)

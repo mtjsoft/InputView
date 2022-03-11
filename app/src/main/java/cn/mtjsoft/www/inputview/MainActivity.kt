@@ -1,10 +1,12 @@
 package cn.mtjsoft.www.inputview
 
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import cn.mtjsoft.inputview.InputView
 import cn.mtjsoft.inputview.entity.FunctionEntity
 import cn.mtjsoft.inputview.iml.AdapterItemClickListener
@@ -14,11 +16,18 @@ import cn.mtjsoft.inputview.manager.PCMAudioPlayer
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         val inputView = findViewById<InputView>(R.id.bottom_input)
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+
+        recyclerView.setOnTouchListener { view, motionEvent ->
+            inputView.hideKeyboardAndInputView()
+            return@setOnTouchListener false
+        }
 
         // 功能面板数据
         val functionData = LinkedList<FunctionEntity>()
@@ -49,6 +58,16 @@ class MainActivity : AppCompatActivity() {
             })
             // 设置录音完成回调
             .setVoiceOverListener(object : VoiceOverListener {
+                // 没有录音权限回调，在这里申请权限
+                override fun noPermission(permission: String) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(
+                            arrayOf(permission),
+                            0
+                        )
+                    }
+                }
+
                 override fun onOver(fileName: String, filePath: String, duration: Int) {
                     Toast.makeText(baseContext, "录音时长：$duration 秒，$filePath", Toast.LENGTH_SHORT)
                         .show()

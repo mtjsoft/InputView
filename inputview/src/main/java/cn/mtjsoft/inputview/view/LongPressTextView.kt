@@ -87,7 +87,7 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
             setStop()
             mRecordManager.stopRecording()
             if (!isCancel) {
-                if (currentDur > 0) {
+                if (currentDur >= RECORD_TIME_MIN) {
                     mPressListener?.onRecordOver(currentDur, saveFileName, savePcmPath)
                 } else {
                     Toast.makeText(
@@ -127,11 +127,7 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
         ) {
             setStop()
             // 没有权限
-            Toast.makeText(
-                context,
-                context.resources.getString(R.string.RECORD_AUDIO_Permission),
-                Toast.LENGTH_SHORT
-            ).show()
+            mPressListener?.noPermission(RECORD_AUDIO)
             return
         }
         if (!validateMicAvailability()) {
@@ -278,6 +274,9 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
     }
 
     interface onLongPressListener {
+
+        fun noPermission(permission: String)
+
         fun onRecordOver(
             currentDur: Long,
             fileName: String,
@@ -371,7 +370,7 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
 
     companion object {
         var RECORD_TIME_MAX: Long = 60000
-
+        var RECORD_TIME_MIN: Long = 1000
         /**
          * 两次点击按钮之间的点击间隔不能少于1000毫秒
          */
@@ -404,5 +403,18 @@ class LongPressTextView(private val mContext: Context, attrs: AttributeSet?) : A
             window?.setDimAmount(0f)
         }
         mVolumeResources = mContext.resources.obtainTypedArray(R.array.record_volume_array)
+    }
+
+    fun setMinAndMaxTime(min: Int, max: Int) {
+        (min * 1000L).also {
+            if (it >= 1000) {
+                RECORD_TIME_MIN = it
+            }
+        }
+        (max * 1000L).also {
+            if (it > RECORD_TIME_MIN) {
+                RECORD_TIME_MAX = it
+            }
+        }
     }
 }

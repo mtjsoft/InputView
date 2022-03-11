@@ -8,5 +8,6 @@ package cn.mtjsoft.inputview.iml
  * @param duration 保存的文件时长（单位秒）
  */
 interface VoiceOverListener {
+    fun noPermission(permission: String)
     fun onOver(fileName: String, filePath: String, duration: Int)
 }

@@ -2,12 +2,14 @@ package cn.mtjsoft.inputview.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import cn.mtjsoft.inputview.R
 import cn.mtjsoft.inputview.entity.FunctionEntity
@@ -33,7 +35,7 @@ class FuncationAdapter(
     fun getData(): List<FunctionEntity> = data
 
     @SuppressLint("NotifyDataSetChanged")
-    fun notifyDataChanged(){
+    fun notifyDataChanged() {
         notifyDataSetChanged()
     }
 
@@ -42,8 +44,11 @@ class FuncationAdapter(
         holder: FuncationAdapter.FuncationViewHolder,
         @SuppressLint("RecyclerView") position: Int
     ) {
-        holder.imageView.setImageResource(data[position].imgResId)
-        holder.nameView.text = data[position].name
+        val bean = data[position]
+        holder.imageView.setImageResource(bean.imgResId)
+        holder.nameView.text = bean.name
+        holder.nameView.setTextColor(ContextCompat.getColor(context, bean.textColorResId))
+        holder.nameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, bean.textSizeSp)
         holder.itemLayout.setOnClickListener {
             clickListener.onItemClick(it, position)
         }

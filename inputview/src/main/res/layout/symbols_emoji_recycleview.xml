@@ -3,7 +3,7 @@
     android:id="@+id/gv_symbols_emoji"
     android:layout_width="match_parent"
     android:layout_height="253dp"
-    android:background="@color/key_bg_function_bg"
+    android:background="@color/panel_function_bg"
     android:fadeScrollbars="true"
     android:scrollbarStyle="outsideOverlay"
     android:scrollbars="vertical"

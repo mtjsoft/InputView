@@ -12,10 +12,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -26,20 +23,23 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.mtjsoft.inputview.adapter.EmojiAdapter
 import cn.mtjsoft.inputview.adapter.EmojiTypeAdapter
 import cn.mtjsoft.inputview.adapter.FuncationAdapter
+import cn.mtjsoft.inputview.builder.CustomAttributeBuilder
 import cn.mtjsoft.inputview.entity.EmojiEntry
 import cn.mtjsoft.inputview.entity.FunctionEntity
+import cn.mtjsoft.inputview.extentions.screenWidth
 import cn.mtjsoft.inputview.iml.AdapterItemClickListener
 import cn.mtjsoft.inputview.iml.SendClickListener
 import cn.mtjsoft.inputview.iml.VoiceOverListener
 import cn.mtjsoft.inputview.view.LongPressTextView
 import java.util.*
 
-
 /**
  * 自定义IM输入控件
  * 包含表情库、操作面板
  */
 class InputView : LinearLayout {
+
+    private lateinit var customAttributeBuilder: CustomAttributeBuilder
 
     private val EMOJI_ASSERT_SRC = "emoji"
     private val EMOJI_SUFFIX = ".png"
@@ -78,6 +78,7 @@ class InputView : LinearLayout {
         attributeSet,
         defStyleAttr
     ) {
+        customAttributeBuilder = CustomAttributeBuilder(context, attributeSet)
         orientation = VERTICAL
         initView()
         initEmojiTypeData()
@@ -102,16 +103,19 @@ class InputView : LinearLayout {
         inputView =
             LayoutInflater.from(context).inflate(R.layout.input_view, this, true)
                 .findViewById(R.id.inputLayout)
+        inputView.setBackgroundResource(customAttributeBuilder.inputViewBackgroundColor())
         // 表情库、常用面板
         mRecyclerView =
             LayoutInflater.from(context)
                 .inflate(R.layout.symbols_emoji_recycleview, this, true)
                 .findViewById(R.id.gv_symbols_emoji)
+        mRecyclerView.setBackgroundResource(customAttributeBuilder.panelBackgroundColor())
         // 表情类型
         emojiTypeView =
             LayoutInflater.from(context)
                 .inflate(R.layout.emoji_type_view, this, true)
                 .findViewById(R.id.ll_symbols_emoji_type_item)
+        emojiTypeView.setBackgroundResource(customAttributeBuilder.emojiTypeListBackgroundColor())
         inputViewChildView()
     }
 
@@ -133,6 +137,7 @@ class InputView : LinearLayout {
         val mRecordView = findViewById<LongPressTextView>(R.id.long_press_tv)
         val sendBtn = findViewById<TextView>(R.id.bt_chat_send)
         val addImageView = findViewById<ImageView>(R.id.iv_add_image)
+        addImageView.setImageResource(customAttributeBuilder.funCationIconResId())
         mEtInput.addTextChangedListener {
             it?.let {
                 sendBtn.visibility = if (TextUtils.isEmpty(it.toString())) GONE else VISIBLE
@@ -140,14 +145,16 @@ class InputView : LinearLayout {
             }
         }
         // 发送点击
+        sendBtn.setBackgroundResource(customAttributeBuilder.sendBtnBackgroundResId())
         sendBtn.setOnClickListener {
             // 点击发送消息
             sendClickListener?.onSendClick(it, mEtInput.text.toString())
             mEtInput.setText("")
         }
         // 语音点击
+        voiceImageView.setImageResource(customAttributeBuilder.audioIconResId())
         voiceImageView.setOnClickListener {
-            voiceImageView.setImageResource(if (mRecordView.visibility == VISIBLE) R.mipmap.ic_read_voice else R.mipmap.icon_keyboard)
+            voiceImageView.setImageResource(if (mRecordView.visibility == VISIBLE) customAttributeBuilder.audioIconResId() else customAttributeBuilder.keyboardIconResId())
             mEtInput.visibility = if (mRecordView.visibility == VISIBLE) VISIBLE else GONE
             hideEmojiView(mRecordView.visibility == VISIBLE)
             if (mRecordView.visibility == GONE) {
@@ -158,15 +165,16 @@ class InputView : LinearLayout {
         }
         // 表情显示/隐藏
         openEmojiView = findViewById(R.id.iv_emoji)
+        openEmojiView.setImageResource(customAttributeBuilder.emojiIconResId())
         openEmojiView.setOnClickListener {
             // 还原输入框
-            voiceImageView.setImageResource(R.mipmap.ic_read_voice)
+            voiceImageView.setImageResource(customAttributeBuilder.audioIconResId())
             mRecordView.visibility = GONE
             mEtInput.visibility = VISIBLE
             // 展开或隐藏表情面板
             if (emojiTypeView.visibility == GONE) {
                 // 展开
-                openEmojiView.setImageResource(R.mipmap.icon_keyboard)
+                openEmojiView.setImageResource(customAttributeBuilder.keyboardIconResId())
                 hideKeyboard(it.windowToken)
                 MAIN_HANDLER.postDelayed({
                     initEmojiData(true)
@@ -178,10 +186,10 @@ class InputView : LinearLayout {
         // 开启/关闭功能面板
         addImageView.setOnClickListener {
             // 还原输入框
-            voiceImageView.setImageResource(R.mipmap.ic_read_voice)
+            voiceImageView.setImageResource(customAttributeBuilder.audioIconResId())
             mRecordView.visibility = GONE
             mEtInput.visibility = VISIBLE
-            openEmojiView.setImageResource(R.mipmap.ic_emjio)
+            openEmojiView.setImageResource(customAttributeBuilder.emojiIconResId())
             // 点击添加，切换功能面板
             if (mRecyclerView.layoutManager == gridLayoutManagerSpan4 && mRecyclerView.visibility == VISIBLE) {
                 // 已显示功能面板，再次点击，隐藏
@@ -201,9 +209,13 @@ class InputView : LinearLayout {
                 }, 100)
             }
         }
-
         // 设置录音监听
+        mRecordView.setMinAndMaxTime(customAttributeBuilder.voiceMinTime(), customAttributeBuilder.voiceMaxTime())
         mRecordView.setOnLongPressListener(object : LongPressTextView.onLongPressListener {
+            override fun noPermission(permission: String) {
+                voiceOverListener?.noPermission(permission)
+            }
+
             override fun onRecordOver(currentDur: Long, fileName: String, filePath: String) {
                 voiceOverListener?.onOver(fileName, filePath, (currentDur / 1000).toInt())
             }
@@ -250,14 +262,15 @@ class InputView : LinearLayout {
             emojiGroup[FACE_TYPE]?.let {
                 emojiData.addAll(it)
             }
-            emojiAdapter = EmojiAdapter(context, emojiData, object : AdapterItemClickListener {
+            val spanNum = customAttributeBuilder.emojiColumnNumber()
+            emojiAdapter = EmojiAdapter(context, context.screenWidth / spanNum, emojiData, object : AdapterItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
                     // emoji点击，添加入输入框
                     val result = getEmoji(emojiData[position].code)
                     mEtInput.text.insert(mEtInput.selectionStart, result)
                 }
             })
-            gridLayoutManagerSpan6 = GridLayoutManager(context, 6)
+            gridLayoutManagerSpan6 = GridLayoutManager(context, spanNum)
             mRecyclerView.layoutManager = gridLayoutManagerSpan6
             mRecyclerView.adapter = emojiAdapter
         } else {
@@ -299,18 +312,23 @@ class InputView : LinearLayout {
         emojiTypeAdapter = EmojiTypeAdapter(
             context,
             context.resources.getStringArray(R.array.emoji_types).toList(),
+            customAttributeBuilder,
             object : AdapterItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
                     setEmojiByType(typeEns[position])
                 }
             })
         recyclerView.adapter = emojiTypeAdapter
-        findViewById<ImageView>(R.id.ib_symbols_emoji_type_back).setOnClickListener {
+        val typeBack = findViewById<ImageView>(R.id.ib_symbols_emoji_type_back)
+        typeBack.setImageResource(customAttributeBuilder.emojiBackIconResId())
+        typeBack.setOnClickListener {
             // 返回按键
             hideEmojiView(true)
         }
 
-        findViewById<ImageView>(R.id.iv_symbols_emoji_type_delete).setOnClickListener {
+        val typeDelete = findViewById<ImageView>(R.id.iv_symbols_emoji_type_delete)
+        typeDelete.setImageResource(customAttributeBuilder.emojiDeleteIconResId())
+        typeDelete.setOnClickListener {
             // 删除按键
             deleteEmoji(mEtInput)
         }
@@ -320,7 +338,7 @@ class InputView : LinearLayout {
      * 初始化功能面板数据
      */
     private fun initFunctionData() {
-        gridLayoutManagerSpan4 = GridLayoutManager(context, 4)
+        gridLayoutManagerSpan4 = GridLayoutManager(context, customAttributeBuilder.funCationColumnNumber())
         val ids = listOf(R.mipmap.btn_skb_record, R.mipmap.btn_skb_picture, R.mipmap.btn_skb_file)
         val names = listOf("拍照", "相册", "文件")
         functionData.clear()
@@ -342,7 +360,7 @@ class InputView : LinearLayout {
      * 并设置是否弹出软键盘
      */
     private fun hideEmojiView(showSoftInput: Boolean) {
-        openEmojiView.setImageResource(R.mipmap.ic_emjio)
+        openEmojiView.setImageResource(customAttributeBuilder.emojiIconResId())
         mRecyclerView.visibility = GONE
         emojiTypeView.visibility = GONE
         if (showSoftInput) {
@@ -351,6 +369,8 @@ class InputView : LinearLayout {
             val manager =
                 context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
             manager?.showSoftInput(mEtInput, 0)
+        } else {
+            hideKeyboard(mEtInput.windowToken)
         }
     }
 
@@ -388,7 +408,12 @@ class InputView : LinearLayout {
         mEtInput.onKeyUp(keyCode, keyEventUp)
     }
 
-
+    /**
+     * 隐藏输入键盘
+     */
+    fun hideKeyboardAndInputView() {
+        hideEmojiView(false)
+    }
     /**
      * ========================== 设置各种参数 ==========================
      */

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--InputView-->
+    <declare-styleable name="InputView">
+        <!--控件背景色-->
+        <attr name="inputViewBgColor" format="reference" />
+        <!--语音图标-->
+        <attr name="audioIconResId" format="reference" />
+        <!--表情图标-->
+        <attr name="emojiIconResId" format="reference" />
+        <!--功能图标-->
+        <attr name="funCationIconResId" format="reference" />
+        <!--键盘图标-->
+        <attr name="keyboardIconResId" format="reference" />
+        <!--功能面板列数-->
+        <attr name="funCationColumnNumber" format="integer" />
+        <!--功能面板及表情面板背景色-->
+        <attr name="panelBackgroundColor" format="reference" />
+        <!--发送按钮背景-->
+        <attr name="sendBtnBackgroundResId" format="reference" />
+        <!--Emoji 表情列数-->
+        <attr name="emojiColumnNumber" format="integer" />
+        <!--Emoji 类型列表背景色-->
+        <attr name="emojiTypeListBgColor" format="reference" />
+        <!--Emoji 类型 选中的背景色-->
+        <attr name="emojiTypeSelectBgColor" format="reference" />
+        <!--Emoji 返回图标-->
+        <attr name="emojiBackIconResId" format="reference" />
+        <!--Emoji 删除图标-->
+        <attr name="emojiDeleteIconResId" format="reference" />
+        <!--录音最大时长 （秒）-->
+        <attr name="voiceMaxTime" format="integer"/>
+        <!--录音最小时长 （秒）-->
+        <attr name="voiceMinTime" format="integer"/>
+    </declare-styleable>
+</resources>

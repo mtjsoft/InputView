@@ -4,17 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:background="#F2F4F5"
+    android:background="@color/input_bg"
     android:minHeight="48dp"
     android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/iv_voice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:layout_marginLeft="14dp"
-        android:padding="5dp"
+        android:layout_marginLeft="10dp"
         android:src="@mipmap/ic_read_voice" />
 
     <cn.mtjsoft.inputview.view.LongPressTextView
@@ -53,11 +52,10 @@
 
     <ImageView
         android:id="@+id/iv_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:layout_gravity="center_vertical|center_horizontal"
         android:layout_marginRight="10dp"
-        android:padding="5dp"
         android:src="@mipmap/ic_emjio"
         android:tag="0" />
 
@@ -66,7 +64,7 @@
         android:layout_width="60dp"
         android:layout_height="30dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginRight="14dp"
+        android:layout_marginRight="10dp"
         android:background="@drawable/btn_normal"
         android:gravity="center"
         android:padding="0px"
@@ -76,11 +74,10 @@
 
     <ImageView
         android:id="@+id/iv_add_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:layout_marginRight="14dp"
-        android:padding="5dp"
+        android:layout_marginRight="10dp"
         android:src="@mipmap/ic_add_image"
         android:visibility="visible" />
 
