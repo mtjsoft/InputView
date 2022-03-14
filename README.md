@@ -12,7 +12,7 @@ allprojects {
 
 ```kotlin
 dependencies {
-	        implementation 'com.github.mtjsoft:InputView:1.0.0'
+	        implementation 'com.github.mtjsoft:InputView:1.1.0'
 	}
 ```
 
@@ -20,22 +20,41 @@ dependencies {
 
 ```kotlin
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <cn.mtjsoft.inputview.InputView
-        android:id="@+id/bottom_inputview"
+        android:id="@+id/bottom_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:audioIconResId="@mipmap/ic_read_voice"
+        app:emojiBackIconResId="@mipmap/revert"
+        app:emojiColumnNumber="8"
+        app:emojiDeleteIconResId="@mipmap/delete_icon"
+        app:emojiIconResId="@mipmap/ic_emjio"
+        app:emojiTypeListBgColor="@color/design_default_color_error"
+        app:emojiTypeSelectBgColor="@color/purple_200"
+        app:funCationColumnNumber="4"
+        app:funCationIconResId="@mipmap/ic_add_image"
+        app:inputViewBgColor="@color/input_bg"
+        app:keyboardIconResId="@mipmap/icon_keyboard"
+        app:panelBackgroundColor="@color/teal_200"
+        app:sendBtnBackgroundResId="@drawable/send_btn_bg"
+        app:voiceMaxTime="20"
+        app:voiceMinTime="3" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
 ```
 ### 2、activity use demo
 
@@ -48,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         val inputView = findViewById<InputView>(R.id.bottom_inputview)
 
         // 功能面板示例数据
-        val functionData = LinkedList<FunctionEntity>()
+        val functionData = mutableListOf<FunctionEntity>()
         val ids = listOf(
             cn.mtjsoft.inputview.R.mipmap.btn_skb_record,
             cn.mtjsoft.inputview.R.mipmap.btn_skb_picture,
@@ -96,4 +115,27 @@ class MainActivity : AppCompatActivity() {
 <img src="./images/2.jpg"/>
 <img src="./images/3.jpg"/>
 <img src="./images/4.jpg"/>
+
+### 4、版本
+
+V1.1.0
+--------------------------
+
+1.1.0 属性  | 属性说明
+------------- | -------------
+audioIconResId  | 设置语音图标
+emojiBackIconResId  | 设置表情也的返回图标
+emojiColumnNumber  | 设置表情显示的列数 默认8
+emojiDeleteIconResId  | 设置表情页的删除图标
+emojiIconResId  | 设置表情图标
+emojiTypeListBgColor  | 设置表情类型列表的背景色
+emojiTypeSelectBgColor  | 设置表情类型选中的颜色
+funCationColumnNumber  | 设置功能面板的列数 默认4
+funCationIconResId  | 设置功能面板的图标
+panelBackgroundColor  | 设置面板的背景色
+inputViewBgColor  | 设置整个输入框的背景色
+keyboardIconResId  | 设置显示键盘图标
+sendBtnBackgroundResId  | 设置发送按钮背景色
+voiceMaxTime  | 设置录音最大时长 单位秒 默认60秒
+voiceMinTime  | 设置录音最小时长 单位秒 默认1秒
 

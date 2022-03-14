@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 功能面板数据
-        val functionData = LinkedList<FunctionEntity>()
+        val functionData = mutableListOf<FunctionEntity>()
         val ids = listOf(
             cn.mtjsoft.inputview.R.mipmap.btn_skb_record,
             cn.mtjsoft.inputview.R.mipmap.btn_skb_picture,
