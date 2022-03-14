@@ -79,28 +79,40 @@ class MainActivity : AppCompatActivity() {
         }
 
         inputView
-            // 设置功能面板数据
-            .setFuncationData(functionData)
-            // 设置功能面板点击回调
-            .setFuncationClickListener(object : AdapterItemClickListener {
-                override fun onItemClick(view: View, position: Int) {
-                    Toast.makeText(baseContext, "功能点击：${functionData[position].name}", Toast.LENGTH_SHORT).show()
+        // 设置功能面板数据
+        .setFuncationData(functionData)
+        // 设置功能面板点击回调
+        .setFuncationClickListener(object : AdapterItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                Toast.makeText(baseContext, "功能点击：${functionData[position].name}", Toast.LENGTH_SHORT).show()
+            }
+        })
+        // 设置发送按钮点击回调
+        .setSendClickListener(object : SendClickListener {
+            override fun onSendClick(view: View, content: String) {
+                Toast.makeText(baseContext, "发送$content", Toast.LENGTH_SHORT).show()
+            }
+        })
+        // 设置录音完成回调
+        .setVoiceOverListener(object : VoiceOverListener {
+            // 没有录音权限回调，在这里申请权限
+            override fun noPermission(permission: String) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(
+                        arrayOf(permission),
+                        0
+                    )
                 }
-            })
-            // 设置发送按钮点击回调
-            .setSendClickListener(object : SendClickListener {
-                override fun onSendClick(view: View, content: String) {
-                    Toast.makeText(baseContext, "发送内容：$content", Toast.LENGTH_SHORT).show()
-                }
-            })
-            // 设置录音完成回调
-            .setVoiceOverListener(object : VoiceOverListener {
-                override fun onOver(fileName: String, filePath: String, duration: Int) {
-                    Log.e("mtj", "PCM录音保存地址：$filePath PCM录音时长：$duration 秒")
-                    // 播放PCM格式音频
-                    PCMAudioPlayer.instance.startPlay(filePath)
-                }
-            })
+            }
+
+            override fun onOver(fileName: String, filePath: String, duration: Int) {
+                Toast.makeText(baseContext, "录音时长：$duration 秒，$filePath", Toast.LENGTH_SHORT)
+                    .show()
+                Log.e("mtj", "地址：$filePath \n时长：$duration 秒")
+                // 播放PCM格式音频
+                PCMAudioPlayer.instance.startPlay(filePath)
+            }
+        })
     }
 
     override fun onPause() {
